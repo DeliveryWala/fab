@@ -57,16 +57,42 @@
     [self saveContext];
 }
 
-
 #pragma mark - Core Data stack
 
 @synthesize persistentContainer = _persistentContainer;
+
+- (NSManagedObjectContext *)managedObjectContext
+{
+    if (_managedObjectContext != nil) return _managedObjectContext;
+    
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (coordinator != nil) {
+        
+        _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        [_managedObjectContext   setPersistentStoreCoordinator:coordinator];
+    }
+    return _managedObjectContext;
+}
+
+- (NSManagedObjectModel *)managedObjectModel{
+    if(_managedObjectModel != nil){
+        return _managedObjectModel;
+    }else{
+        NSURL *modelUrl = [[NSBundle mainBundle]URLForResource:@"Hotels" withExtension:@"momd"];
+        _managedObjectModel = [[NSManagedObjectModel alloc]initWithContentsOfURL:modelUrl];
+        return _managedObjectModel;
+    }
+}
+
+- (NSURL *)applicationDocumentDirectory{
+    return [[[NSFileManager defaultManager]URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
 
 - (NSPersistentContainer *)persistentContainer {
     // The persistent container for the application. This implementation creates and returns a container, having loaded the store for the application to it.
     @synchronized (self) {
         if (_persistentContainer == nil) {
-            _persistentContainer = [[NSPersistentContainer alloc] initWithName:@"Listing"];
+            _persistentContainer = [[NSPersistentContainer alloc] initWithName:@"Hotels"];
             [_persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription *storeDescription, NSError *error) {
                 if (error != nil) {
                     // Replace this implementation with code to handle the error appropriately.

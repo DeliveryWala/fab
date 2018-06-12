@@ -16,44 +16,95 @@
 
 
 @interface ListingController ()
-@property (strong, nonatomic) NSMutableArray* listing;
+
 @end
 
 @implementation ListingController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     if([self connected]){
         [self fetchListing];
     }else{
-        
+        [self fetchFromDb];
     }
-   
-    
-    
 }
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+   
+}
+
+- (NSManagedObjectContext *)managedObjectContext {
+    NSManagedObjectContext *context = nil;
+    _delegate = [[UIApplication sharedApplication] delegate];
+    if ([_delegate performSelector:@selector(persistentContainer)]) {
+        context = _delegate.persistentContainer.viewContext;
+    }
+    return context;
+}
+
+- (void) fetchFromDb{
+    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]initWithEntityName:@"Hotels"];
+    self.listing = [[managedObjectContext executeFetchRequest:fetchRequest error:nil]mutableCopy];
+    [self.tableView reloadData];
+}
+
+- (void)deleteAllEntities:(NSString *)nameEntity
+{
+    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:nameEntity];
+    [fetchRequest setIncludesPropertyValues:NO]; //only fetch the managedObjectID
+    
+    NSError *error;
+    NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    for (NSManagedObject *object in fetchedObjects)
+    {
+        [managedObjectContext deleteObject:object];
+    }
+    
+    error = nil;
+    [managedObjectContext save:&error];
+}
+
 
 - (void)fetchListing {
     NSString *URL = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ENDPOINT"];
     NSLog(@"%@",URL);
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager GET:URL parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
-
-            if ([responseObject isKindOfClass:[NSArray class]]) {
-
-               
-            }else if ([responseObject  isKindOfClass:[NSDictionary class]]) {
+        if ([responseObject  isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *responseDict = responseObject;
                 NSLog(@"%@",responseDict);
+            
+                [self deleteAllEntities:@"Hotels"];
+            
                 self.listing = [responseDict objectForKey:@"propertyListing"];
-                NSLog(@"%@",self.listing);
-                
-                NSLog(@"%@",URL);
-    
-        }
-        dispatch_async(dispatch_get_main_queue(), ^{
+                int i;
+                for(i=0; i<[self.listing count]; i++){
+                    Listing* model = self.listing[i];
+                    
+                  
+                    NSManagedObjectContext *context = [self managedObjectContext];
+                    
+                    NSManagedObject *hotel = [NSEntityDescription insertNewObjectForEntityForName:@"Hotels" inManagedObjectContext:context];
+                    [hotel setValue:[model valueForKeyPath:@"name"] forKey:@"name"];
+                    [hotel setValue:[model valueForKeyPath:@"city"] forKey:@"city"];
+                    [hotel setValue:[model valueForKeyPath:@"landmark"] forKey:@"landmark"];
+                    [hotel setValue:[model valueForKeyPath:@"price"] forKey:@"price"];
+                    [hotel setValue:[model valueForKeyPath:@"reviewCount"] forKey:@"reviewCount"];
+                    NSError *error = nil;
+                    // Save the object to persistent store
+                    if (![context save:&error]) {
+                        NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
+                    }
+                }
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
 
@@ -62,30 +113,6 @@
     }];
 }
 
--(void) fetchFromCore{
-    AppDelegate *appDelegate =
-    [[UIApplication sharedApplication] delegate];
-    
-    NSManagedObjectContext *context =
-    [appDelegate managedObjectContext];
-    
-    NSEntityDescription *entityDesc =
-    [NSEntityDescription entityForName:@"Hotels"
-                inManagedObjectContext:context];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:entityDesc];
-    
-}
-
-- (NSManagedObjectContext *)managedObjectContext {
-    NSManagedObjectContext *context = nil;
-    id delegate = [[UIApplication sharedApplication] delegate];
-    if ([delegate performSelector:@selector(managedObjectContext)]) {
-        context = [delegate managedObjectContext];
-    }
-    return context;
-}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

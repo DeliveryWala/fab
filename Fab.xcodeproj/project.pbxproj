@@ -21,6 +21,7 @@
 		80EC1FCC20CFAB730040B84C /* Hotels.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 80EC1FCA20CFAB730040B84C /* Hotels.xcdatamodeld */; };
 		80EC1FD420CFB0A60040B84C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EC1FD320CFB0A60040B84C /* SystemConfiguration.framework */; };
 		80EC1FD720CFB11D0040B84C /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 80EC1FD520CFB11C0040B84C /* Reachability.m */; };
+		80EC1FF320D013730040B84C /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80EC1FF220D013730040B84C /* CoreData.framework */; };
 		B7B828F279D9BA80558A9A63 /* libPods-FabUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CFE19B916CD5F2B4BD662E4 /* libPods-FabUITests.a */; };
 		B82360003F2573F87A0B6AEF /* libPods-Fab.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FFCB2B2C98872EEB4CF212B7 /* libPods-Fab.a */; };
 /* End PBXBuildFile section */
@@ -74,6 +75,7 @@
 		80EC1FD320CFB0A60040B84C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		80EC1FD520CFB11C0040B84C /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		80EC1FD620CFB11D0040B84C /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		80EC1FF220D013730040B84C /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		8856991250AC0E8DCE9C7682 /* Pods-FabUITests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabUITests.staging.xcconfig"; path = "Pods/Target Support Files/Pods-FabUITests/Pods-FabUITests.staging.xcconfig"; sourceTree = "<group>"; };
 		8947F9350D8A091F937CCACB /* Pods-FabTests.production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FabTests.production.xcconfig"; path = "Pods/Target Support Files/Pods-FabTests/Pods-FabTests.production.xcconfig"; sourceTree = "<group>"; };
 		89BDD7F7C5FE0F4E6468956E /* Pods-Fab.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fab.release.xcconfig"; path = "Pods/Target Support Files/Pods-Fab/Pods-Fab.release.xcconfig"; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80EC1FF320D013730040B84C /* CoreData.framework in Frameworks */,
 				80EC1FD420CFB0A60040B84C /* SystemConfiguration.framework in Frameworks */,
 				B82360003F2573F87A0B6AEF /* libPods-Fab.a in Frameworks */,
 			);
@@ -116,6 +119,7 @@
 		5881B1CEC3C9A6681DA1F0BE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				80EC1FF220D013730040B84C /* CoreData.framework */,
 				80EC1FD320CFB0A60040B84C /* SystemConfiguration.framework */,
 				FFCB2B2C98872EEB4CF212B7 /* libPods-Fab.a */,
 				4BCB46B4E24BABCC4959E023 /* libPods-FabTests.a */,
