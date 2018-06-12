@@ -7,9 +7,13 @@
 //
 
 #import "ListingController.h"
+#import "AppDelegate.h"
 #import "AFNetworking.h"
 #import "Listing.h"
 #import "ListingCell.h"
+//#import "Reachability.h"
+//#import <SystemConfiguration/SystemConfiguration.h>
+
 
 @interface ListingController ()
 @property (strong, nonatomic) NSMutableArray* listing;
@@ -21,30 +25,24 @@
     [super viewDidLoad];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    [self fetchListing];
+  //  if([self connected]){
+        [self fetchListing];
+    //}else{
+        
+    //}
+   
     
     
 }
-
 
 - (void)fetchListing {
     NSString *URL = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"ENDPOINT"];
     NSLog(@"%@",URL);
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     [manager GET:URL parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
-//        for(NSDictionary *result in responseObject){
-//
-//            NSLog(@"%@",[responseObject objectForKey:result]);
-//
 
-       //     SLog(@"%@",[dict objectForKey:key]);
             if ([responseObject isKindOfClass:[NSArray class]]) {
-//                NSArray *responseArray = [responseObject objectForKey:result];
-//                /* do something with responseArray */
-//                NSData *data = [NSKeyedArchiver archivedDataWithRootObject:responseArray];
-//
-//                self.listing = [Listing arrayOfModelsFromData:data error:nil];
-               // NSLog(@"%@",self.listing);
+
                
             }else if ([responseObject  isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *responseDict = responseObject;
@@ -52,27 +50,34 @@
                 self.listing = [responseDict objectForKey:@"propertyListing"];
                 NSLog(@"%@",self.listing);
                 
-                 NSLog(@"%@",URL);
-                /* do something with responseDict */
-     //       }
-            
-            
+                NSLog(@"%@",URL);
+    
         }
-       
-       
-        
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
-        
-        
-        //self.listing = [Listing arrayOfModelsFromData:responseObject error:nil];
-       // self.hotel = self.listing[arc4random() % self.listing.count];
-        //NSLog(@"JSON: %@", self.listing);
+
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         NSLog(@"Error: %@", error);
     }];
 }
+
+-(void) fetchFromCore{
+    AppDelegate *appDelegate =
+    [[UIApplication sharedApplication] delegate];
+    
+    NSManagedObjectContext *context =
+    [appDelegate managedObjectContext];
+    
+    NSEntityDescription *entityDesc =
+    [NSEntityDescription entityForName:@"Hotels"
+                inManagedObjectContext:context];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDesc];
+    
+}
+
 - (NSManagedObjectContext *)managedObjectContext {
     NSManagedObjectContext *context = nil;
     id delegate = [[UIApplication sharedApplication] delegate];
@@ -112,50 +117,13 @@
 {
     return 165;
 }
-
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+//
+//
+//- (BOOL)connected
+//{
+//    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+//    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+//    return networkStatus != NotReachable;
+//}
 
 @end
