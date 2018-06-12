@@ -11,8 +11,8 @@
 #import "AFNetworking.h"
 #import "Listing.h"
 #import "ListingCell.h"
-//#import "Reachability.h"
-//#import <SystemConfiguration/SystemConfiguration.h>
+#import "Reachability.h"
+#import <SystemConfiguration/SystemConfiguration.h>
 
 
 @interface ListingController ()
@@ -25,11 +25,11 @@
     [super viewDidLoad];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-  //  if([self connected]){
+    if([self connected]){
         [self fetchListing];
-    //}else{
+    }else{
         
-    //}
+    }
    
     
     
@@ -119,11 +119,11 @@
 }
 //
 //
-//- (BOOL)connected
-//{
-//    Reachability *reachability = [Reachability reachabilityForInternetConnection];
-//    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
-//    return networkStatus != NotReachable;
-//}
+- (BOOL)connected
+{
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+    return networkStatus != NotReachable;
+}
 
 @end
